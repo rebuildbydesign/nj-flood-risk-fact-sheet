@@ -264,11 +264,10 @@ function syncCountyURL(name) {
   const url = new URL(window.location.href);
   if (name) {
     url.searchParams.set('county', name);
-    url.hash = slugifyCountyName(name);
   } else {
     url.searchParams.delete('county');
-    url.hash = '';
   }
+  url.hash = '';
   window.history.replaceState({}, '', url);
 }
 
@@ -726,10 +725,6 @@ function renderCounty(name) {
   </div><!-- end .fact-sheet -->
 `;
 }
-
-window.addEventListener('hashchange', () => {
-  renderCounty(getCountyFromURL());
-});
 
 // ── PDF EXPORT ──────────────────────────────────────────────────
 const PDF_EXPORT = {
