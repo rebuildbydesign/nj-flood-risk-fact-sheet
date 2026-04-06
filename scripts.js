@@ -495,8 +495,8 @@ function renderCounty(name) {
         <img class="fs-logo" src="RBD-logo.png" alt="Rebuild by Design">
         <img class="fs-header-banner" src="nj-banner.png" alt="New Jersey Cannot Afford to Wait">
       </div>
-      <div class="fs-county-name">${name} County</div>
-      <div class="fs-subtitle">Flood Risk, Population Impact &amp; Public Infrastructure Exposure &nbsp;·&nbsp; 2025 → 2050 Projections</div>
+      <div class="fs-county-name">${name} County, New Jersey</div>
+      <div class="fs-subtitle">Atlas of Disaster: NJ &nbsp;·&nbsp; NJ Flood Risk = Financial Risk &nbsp;·&nbsp; NJ Underwater: Public Infrastructure at Risk</div>
     </div>
 
     <!-- MAP + RESILIENT INFRASTRUCTURE -->
@@ -671,7 +671,7 @@ function renderCounty(name) {
       <div>
         <div class="fs-footer-title">Methodology &amp; Notes</div>
         <ul class="fs-footer-list">
-          <li>This fact sheet draws from three Rebuild by Design research products: the <strong>Atlas of Accountability</strong> (county-level disaster declarations and federal spending, 2011–2024), <strong>Flood Risk = Financial Risk</strong> (parcel-level displacement and financial analysis of all 3.4 million NJ properties), and <strong>Public Infrastructure Flood Risk</strong> (exposure analysis of 18,959 public assets under 2025 and 2050 flood conditions).</li>
+          <li>This fact sheet draws from three Rebuild by Design research products: the <strong>Atlas of Disaster</strong> (county-level disaster declarations and federal spending, 2011–2024), <strong>NJ Flood Risk = Financial Risk</strong> (parcel-level displacement and financial analysis of all 3.4 million NJ properties), and <strong>NJ Underwater: Public Infrastructure at Risk</strong> (exposure analysis of 18,959 public assets under 2025 and 2050 flood conditions).</li>
 <li><strong>Data Sources:</strong> CDC/ATSDR 2022, EPA, FEMA, NJ Office of GIS, NJDEP, Rutgers University, Senate Budget Office, Trust for Public Land, US EIA, USDOT.</li>
         </ul>
       </div>
