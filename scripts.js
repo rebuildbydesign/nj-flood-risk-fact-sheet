@@ -221,12 +221,13 @@ function buildDataFromCSV(rows) {
 function fmt(n) { return n.toLocaleString('en-US'); }
 function fmtDecimal(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 1 }); }
 function fmtDollar(n) {
-  if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
-  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e9) return '$' + fmtDecimal(n / 1e9) + 'B';
+  if (n >= 1e6) return '$' + fmtDecimal(n / 1e6) + 'M';
   if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
   return '$' + fmt(n);
 }
-function pct(v) { return (v * 100).toFixed(1) + '%'; }
+function fmtPctValue(v) { return fmtDecimal(v) + '%'; }
+function pct(v) { return fmtPctValue(v * 100); }
 function growthClass(g) {
   if (g >= 100) return 'high';
   if (g >= 40) return 'med';
@@ -400,8 +401,8 @@ function buildAssetTwoCol(assetArr, totals) {
       rows += `<tr>
         <td>${m.label}</td>
         <td class="asset-num">${fmt(a.total)}</td>
-        <td class="asset-num"><span class="tbl-pct y2025">${a.p25.toFixed(1)}%</span> <span class="tbl-count">(${fmt(a.r25)})</span></td>
-        <td class="asset-num"><span class="tbl-pct y2050">${a.p50.toFixed(1)}%</span> <span class="tbl-count">(${fmt(a.r50)})</span></td>
+        <td class="asset-num"><span class="tbl-pct y2025">${fmtPctValue(a.p25)}</span> <span class="tbl-count">(${fmt(a.r25)})</span></td>
+        <td class="asset-num"><span class="tbl-pct y2050">${fmtPctValue(a.p50)}</span> <span class="tbl-count">(${fmt(a.r50)})</span></td>
         <td class="asset-num"><span class="growth-badge ${gc}">${growthLabel}</span></td>
       </tr>`;
     });
@@ -412,8 +413,8 @@ function buildAssetTwoCol(assetArr, totals) {
       rows += `<tr class="asset-total-row">
         <td><strong>All Infrastructure</strong></td>
         <td class="asset-num"><strong>${fmt(totals.total)}</strong></td>
-        <td class="asset-num"><span class="tbl-pct y2025">${(totals.total ? totals.r25 / totals.total * 100 : 0).toFixed(1)}%</span> <span class="tbl-count">(${fmt(totals.r25)})</span></td>
-        <td class="asset-num"><span class="tbl-pct y2050">${(totals.total ? totals.r50 / totals.total * 100 : 0).toFixed(1)}%</span> <span class="tbl-count">(${fmt(totals.r50)})</span></td>
+        <td class="asset-num"><span class="tbl-pct y2025">${fmtPctValue(totals.total ? totals.r25 / totals.total * 100 : 0)}</span> <span class="tbl-count">(${fmt(totals.r25)})</span></td>
+        <td class="asset-num"><span class="tbl-pct y2050">${fmtPctValue(totals.total ? totals.r50 / totals.total * 100 : 0)}</span> <span class="tbl-count">(${fmt(totals.r50)})</span></td>
         <td class="asset-num"><span class="growth-badge ${tGc}">${tGrowthLabel}</span></td>
       </tr>`;
     }
@@ -528,7 +529,7 @@ function renderCounty(name) {
           <ul class="bond-message-list">
             <li><strong>${name} County</strong> has experienced <strong>${f.disasters} federal disaster declarations</strong> since 2011, with <strong>${fmtDollar(f.totalFEMA)}</strong> in FEMA obligations.</li>
             <li>By 2050, <strong>${fmt(peopleAtRisk2050)} residents</strong> (${pct(c.pctRisk2050)}) will live in flood-risk areas, with <strong>${fmt(peopleGrowth)} more</strong> residents exposed than today.</li>
-            <li><strong>93% of NJ voters</strong> want investments to reduce weather damage and <strong>77%</strong> are worried about extreme weather across party lines (FDU, 2024).</li>
+            <li><strong>93% of NJ voters</strong> want investments to reduce weather damage and <strong>77%</strong> are worried about extreme weather across party lines <a class="citation-link" href="https://www.fdu.edu/news/fdu-poll-finds-3-in-4-nj-voters-worried-about-damage-from-extreme-weather/" target="_blank" rel="noopener noreferrer">(Fairleigh Dickinson University, 2024)</a>.</li>
             <li>NJ needs a dedicated resilient infrastructure funding source.</li>
           </ul>
         </div>
@@ -599,12 +600,12 @@ function renderCounty(name) {
         <div class="risk-row">
           <span class="risk-year-label y2024">2025</span>
           <div class="risk-bar-track"><div class="risk-bar-fill y2024" style="width:${totalAssets ? risk2025 / totalAssets * 100 : 0}%"></div></div>
-          <span class="risk-value y2024">${fmt(risk2025)} <span style="font-size:0.72rem;font-weight:400">(${totalAssets ? (risk2025 / totalAssets * 100).toFixed(1) : 0}%)</span></span>
+          <span class="risk-value y2024">${fmt(risk2025)} <span style="font-size:0.72rem;font-weight:400">(${fmtPctValue(totalAssets ? risk2025 / totalAssets * 100 : 0)})</span></span>
         </div>
         <div class="risk-row">
           <span class="risk-year-label y2050">2050</span>
           <div class="risk-bar-track"><div class="risk-bar-fill y2050" style="width:${totalAssets ? risk2050 / totalAssets * 100 : 0}%"></div></div>
-          <span class="risk-value y2050">${fmt(risk2050)} <span style="font-size:0.72rem;font-weight:400">(${totalAssets ? (risk2050 / totalAssets * 100).toFixed(1) : 0}%)</span></span>
+          <span class="risk-value y2050">${fmt(risk2050)} <span style="font-size:0.72rem;font-weight:400">(${fmtPctValue(totalAssets ? risk2050 / totalAssets * 100 : 0)})</span></span>
         </div>
       </div>
     </div>
@@ -644,7 +645,7 @@ function renderCounty(name) {
         </div>
       </div>
       <div class="blue-acres-panel">
-        <div class="blue-acres-kicker">Blue Acres Findings</div>
+        <div class="blue-acres-kicker">Property Buyouts through the NJ Blue Acres Program</div>
         <div class="blue-acres-stats">
           <div class="blue-acres-stat">
             <div class="blue-acres-value">${fmt(c.blueAcresParcels)}</div>
@@ -656,7 +657,7 @@ function renderCounty(name) {
           </div>
         </div>
         <div class="blue-acres-note">
-          Displacement is already underway, with <strong>${fmt(c.blueAcresParcels)} flood-damaged properties</strong> already acquired through the Blue Acres program in ${name} County, totaling <strong>${fmtDecimal(c.blueAcresAcres)} acres</strong> and representing part of <strong>1,677 statewide buyouts since 1987</strong>.
+          Displacement is already underway, with <strong>${fmt(c.blueAcresParcels)} flood-damaged properties</strong> already acquired through the State's voluntary home buyout program, Blue Acres, in ${name} County, totaling <strong>${fmtDecimal(c.blueAcresAcres)} acres</strong> and representing part of <strong>1,677 statewide buyouts since 1987</strong>.
         </div>
       </div>
     </div>
@@ -893,7 +894,7 @@ async function exportPDF() {
     // and goes straight to jsPDF image placement with scale-to-fit
     await window.html2pdf().set({
       margin: [margin, margin, margin, margin],
-      filename: `NJ_Under_Water_${countyName}_County.pdf`,
+      filename: `NJUnderwater_${countyName}.pdf`,
       image: { type: 'jpeg', quality: 0.95 },
       jsPDF: { unit: 'in', format: 'legal', orientation: 'portrait' },
       pagebreak: { mode: [] }

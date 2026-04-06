@@ -866,6 +866,16 @@ body {
 }
 
 .bond-message strong { color: var(--text); }
+.bond-message .citation-link {
+  color: var(--emigrating);
+  text-decoration: none;
+}
+
+.bond-message .citation-link:hover,
+.bond-message .citation-link:focus-visible {
+  color: var(--emigrating);
+  text-decoration: underline;
+}
 
 .bond-message-list {
   margin: 0;
