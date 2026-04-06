@@ -67,9 +67,11 @@ body {
 
 /* ── SELECTOR BAR ──────────────────────────────────────────── */
 .selector-bar {
-  background: var(--navy);
+  background:
+    linear-gradient(135deg, rgba(221, 64, 0, 0.14), rgba(0, 91, 169, 0.16)),
+    var(--navy);
   color: #fff;
-  padding: 12px 24px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -77,33 +79,70 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 3px solid var(--emigrating);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .selector-left {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 18px;
+  min-width: 0;
 }
 
-.selector-bar .brand {
-  font-size: 0.85rem;
+.selector-brand-logo {
+  height: 42px;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.selector-copy {
+  min-width: 0;
+}
+
+.selector-copy h1 {
+  font-size: 1.55rem;
+  line-height: 1.05;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.selector-copy p {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.82);
+  max-width: 42rem;
+}
+
+.selector-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.selector-label {
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.7);
 }
 
 .county-select {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
+  background: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
-  padding: 7px 14px;
+  color: var(--text);
+  padding: 10px 14px;
   border-radius: var(--radius);
   cursor: pointer;
-  min-width: 200px;
+  min-width: 240px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
 }
 .county-select option { color: var(--text); background: #fff; }
 
@@ -136,7 +175,7 @@ body {
 /* ── FACT SHEET CONTAINER ──────────────────────────────────── */
 .fact-sheet-wrap {
   max-width: 1000px;
-  margin: 16px auto;
+  margin: 24px auto;
   padding: 0 16px;
   width: 100%;
 }
@@ -185,7 +224,7 @@ body {
 }
 
 .fs-county-name {
-  font-size: 1.7rem;
+  font-size: 1.82rem;
   font-weight: 800;
   line-height: 1.15;
   margin-bottom: 2px;
@@ -718,6 +757,13 @@ body {
   margin-bottom: 3px;
 }
 
+.fs-footer-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+  margin-bottom: 8px;
+}
+
 .fs-footer p {
   font-size: 0.75rem;
   color: #fff;
@@ -948,15 +994,23 @@ body.exporting-pdf .county-map-wrap svg {
 /* ── LOADING / EMPTY STATES ─────────────────────────────────── */
 .empty-state {
   text-align: center;
-  padding: 60px 24px;
+  padding: 72px 24px;
   color: var(--text-muted);
+  background:
+    radial-gradient(circle at top left, rgba(30, 162, 219, 0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(221, 64, 0, 0.1), transparent 30%),
+    #fff;
 }
 .empty-state h2 {
-  font-size: 1.2rem;
-  margin-bottom: 8px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
   color: var(--text-mid);
 }
-.empty-state p { font-size: 0.9rem; }
+.empty-state p {
+  font-size: 1rem;
+  max-width: 42rem;
+  margin: 0 auto;
+}
 
 /* ── SVI GAUGE ─────────────────────────────────────────────── */
 .svi-gauge {
@@ -1004,5 +1058,11 @@ body.exporting-pdf .county-map-wrap svg {
   .disp-row-value.pct { display: none; }
   .blue-acres-stats { grid-template-columns: 1fr; }
   .fs-footer { grid-template-columns: 1fr; }
-  .selector-bar { flex-direction: column; gap: 8px; }
+  .selector-bar { flex-direction: column; align-items: stretch; gap: 14px; padding: 16px; }
+  .selector-left { flex-direction: column; gap: 12px; }
+  .selector-copy h1 { font-size: 1.28rem; }
+  .selector-copy p { font-size: 0.9rem; }
+  .selector-actions { width: 100%; }
+  .county-select { width: 100%; min-width: 0; }
+  .btn-export { width: 100%; justify-content: center; }
 }

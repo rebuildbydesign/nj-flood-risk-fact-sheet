@@ -240,6 +240,38 @@ function sviLabel(v) {
   return 'Low';
 }
 
+function slugifyCountyName(name) {
+  return (name || '')
+    .toLowerCase()
+    .replace(/county/g, '')
+    .replace(/new jersey/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function findCountyMatch(rawValue) {
+  if (!rawValue) return '';
+  const normalized = slugifyCountyName(decodeURIComponent(rawValue));
+  return Object.keys(COUNTIES).find(name => slugifyCountyName(name) === normalized) || '';
+}
+
+function getCountyFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return findCountyMatch(params.get('county') || window.location.hash.replace(/^#/, ''));
+}
+
+function syncCountyURL(name) {
+  const url = new URL(window.location.href);
+  if (name) {
+    url.searchParams.set('county', name);
+    url.hash = slugifyCountyName(name);
+  } else {
+    url.searchParams.delete('county');
+    url.hash = '';
+  }
+  window.history.replaceState({}, '', url);
+}
+
 // ── SVG MAP RENDERING ───────────────────────────────────────────
 let COUNTY_PATHS = null;
 let NJ_MAP_BBOX = null;
@@ -382,7 +414,8 @@ function buildNonrenewalsFromCSV(rows) {
       sel.appendChild(opt);
     });
 
-    if (sel.value) renderCounty(sel.value);
+    const initialCounty = getCountyFromURL();
+    renderCounty(initialCounty || sel.value || '');
   });
 })();
 
@@ -433,22 +466,28 @@ function buildAssetTwoCol(assetArr, totals) {
 function renderCounty(name) {
   const container = document.getElementById('fact-sheet-container');
   const btn = document.getElementById('btn-export');
+  const sel = document.getElementById('county-select');
+  const matchedName = findCountyMatch(name) || name;
 
-  if (!name) {
+  if (sel && sel.value !== matchedName) sel.value = matchedName;
+
+  if (!matchedName) {
+    syncCountyURL('');
     container.innerHTML = `<div class="empty-state">
-      <h2>New Jersey County Fact Sheets</h2>
-      <p>Select a county above to view flood risk data, population impact, public infrastructure exposure, and FEMA disaster history.</p>
+      <h2>County-Level Flood Risk, Ready to Explore</h2>
+      <p>Select a county above to view flood exposure, population impacts, public asset risk, and disaster recovery trends.</p>
     </div>`;
     btn.disabled = true;
     return;
   }
 
+  syncCountyURL(matchedName);
   btn.disabled = false;
-  const c = COUNTIES[name];
-  const f = FEMA[name];
-  const nr = NONRENEWALS[name] || { rate2023: 0, pctChange: 0 };
+  const c = COUNTIES[matchedName];
+  const f = FEMA[matchedName];
+  const nr = NONRENEWALS[matchedName] || { rate2023: 0, pctChange: 0 };
   if (!c || !f) {
-    container.innerHTML = `<div class="empty-state"><p>No data available for ${name} County.</p></div>`;
+    container.innerHTML = `<div class="empty-state"><p>No data available for ${matchedName} County.</p></div>`;
     return;
   }
 
@@ -485,7 +524,7 @@ function renderCounty(name) {
   const pctPeopleGrowth = peopleAtRisk2024 > 0 ? ((peopleAtRisk2050 - peopleAtRisk2024) / peopleAtRisk2024 * 100) : 0;
 
   // Build map SVG
-  const mapSVG = buildNJMapSVG(name);
+  const mapSVG = buildNJMapSVG(matchedName);
 
   container.innerHTML = `
   <div class="fact-sheet" id="fact-sheet">
@@ -495,8 +534,8 @@ function renderCounty(name) {
         <img class="fs-logo" src="RBD-logo.png" alt="Rebuild by Design">
         <img class="fs-header-banner" src="nj-banner.png" alt="New Jersey Cannot Afford to Wait">
       </div>
-      <div class="fs-county-name">${name} County, New Jersey</div>
-      <div class="fs-subtitle">Atlas of Disaster: NJ &nbsp;·&nbsp; NJ Flood Risk = Financial Risk &nbsp;·&nbsp; NJ Underwater: Public Infrastructure at Risk</div>
+      <div class="fs-county-name">${matchedName} County, New Jersey</div>
+      <div class="fs-subtitle">Flood Risk to People, Local Infrastructure, and the Economy</div>
     </div>
 
     <!-- MAP + RESILIENT INFRASTRUCTURE -->
@@ -506,7 +545,7 @@ function renderCounty(name) {
       </div>
       <div class="bond-act-callout">
         <div class="bond-act-header">
-          <span class="bond-act-title">The Case for Dedicated Funding in ${name} County</span>
+          <span class="bond-act-title">The Case for Dedicated Funding in ${matchedName} County</span>
         </div>
         <div class="bond-stats-row">
           <div class="bond-stat">
@@ -527,7 +566,7 @@ function renderCounty(name) {
         </div>
         <div class="bond-message">
           <ul class="bond-message-list">
-            <li><strong>${name} County</strong> has experienced <strong>${f.disasters} federal disaster declarations</strong> since 2011, with <strong>${fmtDollar(f.totalFEMA)}</strong> in FEMA obligations.</li>
+            <li><strong>${matchedName} County</strong> has experienced <strong>${f.disasters} federal disaster declarations</strong> since 2011, with <strong>${fmtDollar(f.totalFEMA)}</strong> in FEMA obligations.</li>
             <li>By 2050, <strong>${fmt(peopleAtRisk2050)} residents</strong> (${pct(c.pctRisk2050)}) will live in flood-risk areas, with <strong>${fmt(peopleGrowth)} more</strong> residents exposed than today.</li>
             <li><strong>93% of NJ voters</strong> want investments to reduce weather damage and <strong>77%</strong> are worried about extreme weather across party lines <a class="citation-link" href="https://www.fdu.edu/news/fdu-poll-finds-3-in-4-nj-voters-worried-about-damage-from-extreme-weather/" target="_blank" rel="noopener noreferrer">(Fairleigh Dickinson University, 2024)</a>.</li>
             <li>NJ needs a dedicated resilient infrastructure funding source.</li>
@@ -657,7 +696,7 @@ function renderCounty(name) {
           </div>
         </div>
         <div class="blue-acres-note">
-          Displacement is already underway, with <strong>${fmt(c.blueAcresParcels)} flood-damaged properties</strong> already acquired through the State's voluntary home buyout program, Blue Acres, in ${name} County, totaling <strong>${fmtDecimal(c.blueAcresAcres)} acres</strong> and representing part of <strong>1,677 statewide buyouts since 1987</strong>.
+          Displacement is already underway, with <strong>${fmt(c.blueAcresParcels)} flood-damaged properties</strong> already acquired through the State's voluntary home buyout program, Blue Acres, in ${matchedName} County, totaling <strong>${fmtDecimal(c.blueAcresAcres)} acres</strong> and representing part of <strong>1,677 statewide buyouts since 1987</strong>.
         </div>
       </div>
     </div>
@@ -676,7 +715,7 @@ function renderCounty(name) {
         </ul>
       </div>
       <div>
-        <div class="fs-footer-title">Join the NJ Movement</div>
+        <img class="fs-footer-logo" src="RBD-logo.png" alt="Rebuild by Design">
         <ul class="fs-footer-list">
           <li>Visit <a href="https://rebuildbydesign.org/new-jersey" target="_blank">rebuildbydesign.org/new-jersey</a> for reports, tools, and upcoming events.</li>
           <li>For more information, contact <a href="mailto:info@rebuildbydesign.org">info@rebuildbydesign.org</a></li>
@@ -687,6 +726,10 @@ function renderCounty(name) {
   </div><!-- end .fact-sheet -->
 `;
 }
+
+window.addEventListener('hashchange', () => {
+  renderCounty(getCountyFromURL());
+});
 
 // ── PDF EXPORT ──────────────────────────────────────────────────
 const PDF_EXPORT = {

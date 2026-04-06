@@ -15,9 +15,16 @@
   <!-- ── SELECTOR BAR ──────────────────────────────────── -->
   <nav class="selector-bar">
     <div class="selector-left">
-      <span class="brand">New Jersey County Fact Sheets</span>
+      <img class="selector-brand-logo" src="RBD-logo.png" alt="Rebuild by Design">
+      <div class="selector-copy">
+        <h1>New Jersey County Flood Risk Fact Sheets</h1>
+        <p>Explore county-by-county flood risk to people, public infrastructure, and the local economy.</p>
+      </div>
+    </div>
+    <div class="selector-actions">
+      <label class="selector-label" for="county-select">Choose a County</label>
       <select class="county-select" id="county-select" onchange="renderCounty(this.value)">
-        <option value="">— Select a County —</option>
+        <option value="">Select a County</option>
       </select>
     </div>
     <button class="btn-export" id="btn-export" onclick="exportPDF()" disabled>
@@ -30,8 +37,8 @@
   <div class="fact-sheet-wrap">
     <div id="fact-sheet-container">
       <div class="empty-state">
-        <h2>New Jersey Public Infrastruture at Flood Risk</h2>
-        <p>Select a county above to view flood risk data, public asset exposure, and FEMA disaster history.</p>
+        <h2>County-Level Flood Risk, Ready to Explore</h2>
+        <p>Select a county above to view flood exposure, population impacts, public asset risk, and disaster recovery trends.</p>
       </div>
     </div>
   </div>
