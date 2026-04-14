@@ -714,7 +714,7 @@ function renderCounty(name) {
         </ul>
       </div>
       <div>
-        <img class="fs-footer-logo" src="RBD-logo.png" alt="Rebuild by Design">
+    
         <ul class="fs-footer-list">
           <li>Visit <a href="https://rebuildbydesign.org/new-jersey" target="_blank">rebuildbydesign.org/new-jersey</a> for reports, tools, and upcoming events.</li>
           <li>For more information, contact <a href="mailto:info@rebuildbydesign.org">info@rebuildbydesign.org</a></li>
